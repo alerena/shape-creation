@@ -222,17 +222,17 @@ export class EngineService {
     const meshesAndBodies: Array<{mesh: Mesh, body: any}> = [];
     let mesh: Mesh;
     const cylinder = new CaveCylinder(params);
-    mesh = cylinder.createModel(new Vector3(0, 1, 0));
+    mesh = cylinder.createModel(new Vector3(-3, 0, 0));
     meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
 
     cylinder.color = '#eb445a';
     cylinder.height = 0.3;
     cylinder.externalRadius = 0.275;
     cylinder.internalRadius = 0.125;
-    mesh = cylinder.createModel(new Vector3(0, 4, 0));
+    mesh = cylinder.createModel(new Vector3(0, 0, 0));
     meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
 
-    mesh = cylinder.createModel(new Vector3(4, 4, 0));
+    mesh = cylinder.createModel(new Vector3(4, 0, 0));
     meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
 
     mesh = cylinder.createModel(new Vector3(6, 0, 0));
@@ -245,11 +245,11 @@ export class EngineService {
       mass: 4
     });
     
-    mesh = ball.createModel(new Vector3(0, 8, 0));
+    mesh = ball.createModel(new Vector3(8, 0, 0));
     meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
 
     ball.color = '#5260ff';
-    mesh = ball.createModel(new Vector3(0, 10, 0));
+    mesh = ball.createModel(new Vector3(-5, 0, 0));
     meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
     
     meshesAndBodies.forEach(obj => {

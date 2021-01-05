@@ -107,7 +107,6 @@ export class CaveCylinder {
     }
 
     createModel(pos: Vector3, quat?: Quaternion): Mesh { 
-    //Array<{model: Mesh, body: any}> {
         const geometry = new Geometry();
         let angle = this.degreeToRad(360 / this.segments);
         // In pratica divido il mio poligono regolare in n triangoli che hanno due lati che misurano il raggio della circonferenza
@@ -196,23 +195,36 @@ export class CaveCylinder {
 
     createPhysic(obj: Mesh): any {
         const geometry: Geometry = obj.geometry as Geometry;
-        // const triangles = [];
-        const vertices = geometry.vertices;
-        let myshape = new Ammo.btConvexHullShape();
-        const shape = new Ammo.btCompoundShape();
+        const triangles = [];
         let transform;
-        let count = 0;
-        vertices.forEach(vertice => {
-            count++;
-            myshape.addPoint(new Ammo.btVector3(vertice.x, vertice.y, vertice.z));
-            if (count === 8) {
-                transform = new Ammo.btTransform();
-                transform.setIdentity();
-                transform.setOrigin( new Ammo.btVector3( 0, 0, 0 ) );
-                shape.addChildShape(transform, myshape);
-                myshape = new Ammo.btConvexHullShape();
-            }
+        const vec31 = new Ammo.btVector3(0, 0, 0);
+        const vec32 = new Ammo.btVector3(0, 0, 0);
+        const vec33 = new Ammo.btVector3(0, 0, 0);
+        const vertices = geometry.vertices;
+        geometry.faces.forEach(face => {
+            triangles.push([
+                { x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
+                { x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
+                { x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z }
+            ]);
         });
+
+        const shape = new Ammo.btConvexHullShape();
+        triangles.forEach(triangle => {
+            vec31.setX(triangle[0].x);
+            vec31.setY(triangle[0].y);
+            vec31.setZ(triangle[0].z);
+            shape.addPoint(vec31, true);
+            vec32.setX(triangle[1].x);
+            vec32.setY(triangle[1].y);
+            vec32.setZ(triangle[1].z);
+            shape.addPoint(vec31, true);
+            vec33.setX(triangle[2].x);
+            vec33.setY(triangle[2].y);
+            vec33.setZ(triangle[2].z);
+            shape.addPoint(vec31, true);
+        });
+
         transform = new Ammo.btTransform();
         transform.setIdentity();
         transform.setOrigin( new Ammo.btVector3( obj.position.x, obj.position.y, obj.position.z ) );
