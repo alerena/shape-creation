@@ -34,7 +34,11 @@ export class EngineService {
   async createScene(canvas: ElementRef) {
     // The first step is to get the reference of the canvas element from our HTML document
     this.canvas = canvas.nativeElement;
-    await Ammo();
+    try {
+      await Ammo();
+    } catch (e) {
+      console.error(e);
+    }
     await this.start();
   }
 
@@ -213,29 +217,33 @@ export class EngineService {
   private createObjects() {
     const params = {
       color: '#3880ff',
-      mass: 49,
+      mass: 9,
       externalRadius: 0.25,
       internalRadius: 0.2,
-      height: 0.5,
+      height: 0.25 * 2,
       segments: 32
     };
+    const y = 2;
     const meshesAndBodies: Array<{mesh: Mesh, body: any}> = [];
     let mesh: Mesh;
     const cylinder = new CaveCylinder(params);
-    mesh = cylinder.createModel(new Vector3(-3, 0, 0));
+    mesh = cylinder.createModel(new Vector3(-3, y, 0));
     meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
 
     cylinder.color = '#eb445a';
-    cylinder.height = 0.3;
+    cylinder.height = 0.275 * 2;
     cylinder.externalRadius = 0.275;
     cylinder.internalRadius = 0.125;
-    mesh = cylinder.createModel(new Vector3(0, 0, 0));
+    mesh = cylinder.createModel(new Vector3(0, y, 0));
     meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
 
-    mesh = cylinder.createModel(new Vector3(4, 0, 0));
+    mesh = cylinder.createModel(new Vector3(4, y, 0));
     meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
 
-    mesh = cylinder.createModel(new Vector3(6, 0, 0));
+    mesh = cylinder.createModel(new Vector3(6, y, 0));
+    meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
+
+    mesh = cylinder.createModel(new Vector3(8, 0.5, 0));
     meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
 
     const radius = 0.27;
@@ -244,12 +252,39 @@ export class EngineService {
       radius,
       mass: 4
     });
-    
-    mesh = ball.createModel(new Vector3(8, 0, 0));
+
+    mesh = ball.createModel(new Vector3(8, 0.5 + cylinder.height + radius, 0));
     meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
+    
+    ball.color = '#ff0000';
+    mesh = ball.createModel(new Vector3(-3, y+cylinder.height, 0));
+    meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
+    this.ballObject = mesh;
 
     ball.color = '#5260ff';
-    mesh = ball.createModel(new Vector3(-5, 0, 0));
+    mesh = ball.createModel(new Vector3(-5, 5, 0));
+    meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
+
+
+
+    cylinder.color = '#ffff00';
+    cylinder.height = 0.75;
+    cylinder.externalRadius = 1;
+    cylinder.internalRadius = 0.75;
+    mesh = cylinder.createModel(new Vector3(0, 0.5, 3));
+    meshesAndBodies.push( {mesh, body: cylinder.createPhysic(mesh)} );
+
+    ball.color = '#ff0000';
+    mesh = ball.createModel(new Vector3(0.2, 5, 3));
+    meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
+    
+    ball.color = '#00ff00';
+    mesh = ball.createModel(new Vector3(-0.2, 7, 3));
+    meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
+    this.ballObject = mesh;
+
+    ball.color = '#0000ff';
+    mesh = ball.createModel(new Vector3(0, 6, 3));
     meshesAndBodies.push( {mesh, body: ball.createPhysic(mesh)} );
     
     meshesAndBodies.forEach(obj => {
